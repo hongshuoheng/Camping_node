@@ -1,0 +1,93 @@
+<%- include('../parts/header') %> <%- include('../parts/navbar') %>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <li class="page-item <%= 1==page ? 'disabled' : '' %>">
+                <a class="page-link" href="?page=1">
+                  <i class="fa-solid fa-angles-left"></i>
+                </a>
+              </li>
+              <li class="page-item <%= 1==page ? 'disabled' : '' %>">
+                <a class="page-link" href="?page=<%= page-1 %>">
+                  <i class="fa-solid fa-angle-left"></i>
+                </a>
+              </li>
+              <% for(let i=page-3; i<=page+3; i++) if(i>=1 && i<=totalPages){ %>
+                  <li class="page-item <%= i==page ? 'active' : '' %>">
+                    <a class="page-link" href="?page=<%= i %>">
+                      <%= i %>
+                    </a>
+                  </li>
+                  <% } %>
+                    <li class="page-item <%= totalPages==page ? 'disabled' : '' %>">
+                      <a class="page-link" href="?page=<%= page+1 %>">
+                        <i class="fa-solid fa-angle-right"></i>
+                      </a>
+                    </li>
+                    <li class="page-item <%= totalPages==page ? 'disabled' : '' %>">
+                      <a class="page-link" href="?page=<%= totalPages %>">
+                        <i class="fa-solid fa-angles-right"></i>
+                      </a>
+                    </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">姓名</th>
+                <th scope="col">Email</th>
+                <th scope="col">生日</th>
+                <th scope="col">地址</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for(let r of rows){ %>
+                <tr>
+                  <td>
+                    <%= r.sid %>
+                  </td>
+                  <td>
+                    <%= r.name %>
+                  </td>
+                  <td>
+                    <%= r.email %>
+                  </td>
+                  <td>
+                    <%= r.birthday %>
+                  </td>
+                  <td>
+                    <%= r.address %>
+                  </td>
+                </tr>
+                <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <%- include('../parts/script') %>
+      <script>
+        function deleteItem(sid) {
+          if (confirm(`你確定要刪除編號為 ${sid} 的資料嗎?`)) {
+            fetch(`/address-book/api/${sid}`, {
+              method: "DELETE",
+            })
+              .then((r) => r.json())
+              .then((obj) => {
+                if (obj.success) {
+                  location.reload();
+                } else {
+                  alert("刪除發生錯誤");
+                }
+              });
+          }
+        }
+      </script>
+      <%- include('../parts/footer') %>

@@ -1,0 +1,33 @@
+<%- include('parts/header') %>
+  <%- include('parts/navbar') %>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <!-- 沒有form action因為表單相同位置 -->
+          <form method="post">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="text" class="form-control" id="email" name="email">
+              <div class="form-text">
+                <%= typeof email==="undefined" ? '' :email %>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password">
+              <div class="form-text">
+                <%= locals.password ? password : '' %>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+
+          <pre><%- JSON.stringify(locals,null, 4) %></pre>
+
+        </div>
+      </div>
+    </div>
+
+    <%- include('parts/script') %>
+      <%- include('parts/footer') %>

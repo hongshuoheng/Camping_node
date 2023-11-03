@@ -1,0 +1,79 @@
+<%- include('parts/header') %>
+  <%- include('parts/navbar') %>
+    <style>
+      form input.form-control {
+        border: 1px solid #cccccc
+      }
+
+      form .form-text {
+        /* display: none; */
+      }
+
+      form .warning input.form-control {
+        border: 2px solid red;
+      }
+
+      form .form-text {
+        color: red
+      }
+    </style>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">會員登入</h5>
+              <form name="form1" onsubmit="sendData(event)">
+                <div class="mb-3">
+                  <label for="name" class="form-label">帳號</label>
+                  <input type="text" class="form-control" id="email" name="email">
+                  <div class="form-text"></div>
+                </div>
+                <div class="mb-3">
+                  <label for="password" class="form-label">密碼</label>
+                  <input type="password" class="form-control " name="password">
+                  <div class=" form-text">
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%- include('parts/script') %>
+
+      <script>
+
+        function sendData(e) {
+
+          e.preventDefault(); // 避免以傳統的方式送出表單
+
+          const fd = new FormData(document.form1);
+          const usp = new URLSearchParams(fd);
+
+          fetch("", {
+            method: "POST",
+            body: usp.toString(),
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          })
+            .then((r) => r.json())
+            .then((obj) => {
+              console.log(obj);
+              if (obj.success) {
+                alert("登入成功");
+                location.href("/") //跳轉到首頁
+              } else {
+                alert('帳號或密碼錯誤')
+              }
+            })
+
+            .catch((ex) => console.log(ex));
+        }
+
+      </script>
+      <%- include('parts/footer') %>

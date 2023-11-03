@@ -1,0 +1,123 @@
+<%- include('../parts/header') %>
+  <%- include('../parts/navbar') %>
+    <style>
+      form input.form-control {
+        border: 1px solid #cccccc
+      }
+
+      form .form-text {
+        /* display: none; */
+      }
+
+      form .warning input.form-control {
+        border: 2px solid red;
+      }
+
+      form .form-text {
+        color: red
+      }
+    </style>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">新增通訊錄</h5>
+              <form name="form1" onsubmit="sendData(event)">
+                <div class="mb-3">
+                  <label for="name" class="form-label">姓名</label>
+                  <input type="text" class="form-control" id="name" name="name">
+                  <div class="form-text"></div>
+                </div>
+                <div class="mb-3">
+                  <label for="mobile" class="form-label">手機號碼</label>
+                  <input type="mobile" class="form-control" id="mobile" name="mobile">
+                  <div class="form-text"></div>
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">email</label>
+                  <input type="text" class="form-control" id="email" name="email">
+                  <div class="form-text"></div>
+                </div>
+                <div class="mb-3">
+                  <label for="birthday" class="form-label">birthday</label>
+                  <input type="date" class="form-control" id="birthday" name="birthday">
+                  <div class="form-text"></div>
+                </div>
+                <div class="mb-3">
+                  <label for="address" class="form-label">address</label>
+                  <input type="text" class="form-control" id="address" name="address">
+                  <div class="form-text"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%- include('../parts/script') %>
+
+      <script>
+        const email_re =
+          /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        const name_f = document.form1.name;
+        const email_f = document.form1.email;
+        const requiredFields = [name_f, email_f];
+
+        function sendData(e) {
+
+          e.preventDefault(); // 避免以傳統的方式送出表單
+
+          // TODO: 清除警告標示
+          let isPass = true; // 有沒有通常檢查
+
+          // TODO: 欄位格式檢查
+          if (name_f.value.length < 2) {
+            isPass = false;
+            name_f.closest("div").classList.add("warning")
+            console.log(name_f.nextElementSibling);
+            name_f.nextElementSibling.innerHTML = "請輸入正確的姓名";
+          }
+          if (!email_re.test(email_f.value)) {
+            isPass = false;
+            name_f.closest("div").classList.add("warning")
+            email_f.nextElementSibling.innerHTML = "請輸入正確的 email";
+
+          }
+
+          if (isPass) {
+            const fd = new FormData(document.form1);
+            const usp = new URLSearchParams(fd);
+
+            fetch("/address-book/api", {
+              method: "POST",
+              body: usp.toString(),
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+            })
+              .then((r) => r.json())
+              .then((obj) => {
+                console.log(obj);
+
+                if (obj.success) {
+                  alert("資料新增成功");
+
+                } else {
+                  for (let s in obj.errors) {
+                    if (document.form1[s] && (document.form1[s] instanceof Element)) {
+                      const el = document.form1[s];
+                      el.closest("div").classList.add("warning");
+                      el.nextElementSibling.innerHTML = obj.errors[s]
+                    }
+                  }
+                }
+              })
+              .catch((ex) => console.log(ex));
+          }
+        }
+      </script>
+      <%- include('../parts/footer') %>
